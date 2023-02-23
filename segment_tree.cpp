@@ -41,43 +41,36 @@ int search_in_intervals(int idx,int lo,int hi,int l,int r){
      return max(left,right);
 }
 
-int main(){
-    int n; cin >> n; 
-    loop(i,0,n) cin >> a[i]; 
-    build_segment_tree(0,0,n-1); 
-    cout << search_in_intervals(0,0,9,0,5) << endl;
-    return 0;
+/*  building memory efficent segment tree  */
+vi build(vi &a){
+     int n = a.size(); vi seg((n<<1)+1,0); 
+     loop(i,n,n<<1){seg[i] = a[i-n];}
+     dloop(i,n-1,1){seg[i] = max(seg[i<<1],seg[(i<<1)|1]);}
+     return seg;
+}
+int search_max(vi &tree,int l,int r){
+     int n = (tree.size())>>1; int res = -1e9; 
+     for(l+=n,r+=n;l<=r;l>>=1,r>>=1){
+          if(l&1) res = max(res,tree[l++]); 
+          if(!(r&1)) res = max(res,tree[r--]);
+     }
+     return res;
 }
 
-
-// int main(){
-//     int t; cin >> t; 
-//     while(t--){
-//         int n,q; cin >> n >> q; 
-//         memset(a,0,sizeof(a));
-//         loop(i,0,n) cin >> a[i]; 
-//         build_segment_tree(0,0,n-1);
-//         while(q--){
-//             int l,r; cin >> l >> r; 
-//             int ans = search_in_intervals(0,0,n-1,l,r);
-//             cout << ans << endl;
-//         }
-//     }
-//     return 0;
-// }
-
-// int main(){
-//     int t; cin >> t; 
-//     while(t--){
-//         int n,q; cin >> n >> q;
-//         int b[n]; loop(i,0,n) cin >> b[i]; 
-//         int pre[n]; pre[0] = b[0]; loop(i,1,n){pre[i]=max(b[i],b[i-1]);}
-//         while(q--){
-//             int l,r; cin >> l >> r; 
-
-//         }
-//     }
-//     return 0;
-// }
-
-
+int main(){
+    int m; cin >> m;
+    build_segment_tree(0,0,m-1); 
+    cout << search_in_intervals(0,0,m-1,0,5) << endl;
+    int t; cin >> t; 
+    while(t--){
+          int n,q; cin >> n >> q; 
+          vi b,seg_tree; 
+          loop(i,0,n){int in; cin >> in; b.pb(in);}
+          seg_tree = build(b); 
+          while(q--){
+               int l,r; cin >> l >> r; 
+               cout << search(seg_tree,l,r) << endl;
+          }
+    }
+    return 0;
+}
